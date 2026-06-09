@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0A0E1A" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Shortcut</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg: #0A0E1A;
+      --surface: #111827;
+      --card: #1C2333;
+      --card-hover: #232D42;
+      --border: #2D3748;
+      --accent: #00D4AA;
+      --accent-dim: rgba(0, 212, 170, 0.12);
+      --accent-glow: rgba(0, 212, 170, 0.35);
+      --text: #F9FAFB;
+      --subtext: #9CA3AF;
+      --muted: #4B5563;
+      --error: #FF6B6B;
+      --error-dim: rgba(255, 107, 107, 0.12);
+      --success: #00D4AA;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 8px;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html {
+      height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100%;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ── */
+    .app {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px 40px;
+    }
+
+    /* ── Header ── */
+    .header {
+      padding: 52px 0 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: #0A0E1A;
+    }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .header-sub {
+      font-size: 14px;
+      color: var(--subtext);
+      font-weight: 400;
+      line-height: 1.5;
+      padding-left: 2px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── Field ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--subtext);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── Phone Row ── */
+    .phone-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      background: var(--surface);
+    }
+
+    .phone-row:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow), 0 0 20px var(--accent-dim);
+    }
+
+    .phone-row.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px var(--error-dim);
+    }
+
+    .country-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      border-right: 1.5px solid var(--border);
+      transition: background var(--transition);
+      min-width: 80px;
+    }
+
+    .country-btn:active {
+      background: var(--card-hover);
+    }
+
+    .country-btn .flag {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .country-btn .caret {
+      color: var(--muted);
+      font-size: 10px;
+      margin-left: 2px;
+    }
+
+    .phone-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 15px 14px;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      min-width: 0;
+    }
+
+    .phone-input::placeholder {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ── Paste/Clear Actions ── */
+    .input-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--subtext);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+
+    .action-chip:active,
+    .action-chip:hover {
+      background: var(--card-hover);
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
+    .action-chip svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .action-chip.clear-chip:hover,
+    .action-chip.clear-chip:active {
+      border-color: var(--error);
+      color: var(--error);
+      background: var(--error-dim);
+    }
+
+    /* ── Message Field ── */
+    .message-input {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      width: 100%;
+      min-height: 96px;
+      line-height: 1.5;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .message-input::placeholder {
+      color: var(--muted);
+    }
+
+    .message-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .char-count {
+      align-self: flex-end;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── Launch Button ── */
+    .launch-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 17px 24px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #0A0E1A;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .launch-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background var(--transition);
+    }
+
+    .launch-btn:hover::before {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .launch-btn:active {
+      transform: scale(0.98);
+    }
+
+    .launch-btn svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* ── Country Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 24px 24px 0 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      max-height: 75dvh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      overflow: hidden;
+    }
+
+    .modal-overlay.open .modal-sheet {
+      transform: translateY(0);
+    }
+
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--muted);
+      border-radius: 2px;
+      margin: 14px auto 0;
+      flex-shrink: 0;
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .modal-search {
+      margin: 0 20px 12px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-xs);
+      padding: 11px 14px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color var(--transition);
+      flex-shrink: 0;
+    }
+
+    .modal-search::placeholder { color: var(--muted); }
+    .modal-search:focus { border-color: var(--accent); }
+
+    .country-list {
+      overflow-y: auto;
+      flex: 1;
+      padding: 0 12px 24px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .country-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 10px;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .country-item:active,
+    .country-item:hover {
+      background: var(--card-hover);
+    }
+
+    .country-item.selected {
+      background: var(--accent-dim);
+    }
+
+    .country-item .ci-flag { font-size: 22px; line-height: 1; }
+    .country-item .ci-name { flex: 1; font-size: 15px; font-weight: 500; }
+    .country-item .ci-code { font-size: 14px; color: var(--subtext); font-weight: 600; }
+    .country-item.selected .ci-code { color: var(--accent); }
+
+    /* ── Toast ── */
+    .toast-container {
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      pointer-events: none;
+      width: calc(100% - 40px);
+      max-width: 440px;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+      border: 1px solid;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      width: 100%;
+      animation: toastIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      pointer-events: all;
+    }
+
+    .toast.removing {
+      animation: toastOut 0.25s ease forwards;
+    }
+
+    .toast.error {
+      background: rgba(30, 15, 15, 0.92);
+      border-color: rgba(255, 107, 107, 0.4);
+      color: #FFB3B3;
+    }
+
+    .toast.success {
+      background: rgba(10, 30, 25, 0.92);
+      border-color: rgba(0, 212, 170, 0.35);
+      color: #A0EDD8;
+    }
+
+    .toast-icon { font-size: 16px; flex-shrink: 0; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to   { opacity: 0; transform: translateY(8px) scale(0.95); }
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 -20px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: auto;
+      padding-top: 28px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer span { color: var(--accent); }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Header -->
+  <header class="header">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 2L4.09 12.11a1 1 0 0 0-.09 1.13L8 20l1-4h7a2 2 0 0 0 1.94-1.5l2-8A2 2 0 0 0 18 4h-4.27L13 2z"/>
+        </svg>
+      </div>
+      <span class="logo-text">Shortcut</span>
+    </div>
+    <p class="header-sub">Open a WhatsApp chat instantly — no saving needed.</p>
+  </header>
+
+  <!-- Main Card -->
+  <div class="card">
+
+    <!-- Phone Number -->
+    <div class="field">
+      <label class="field-label">Phone Number</label>
+      <div class="phone-row" id="phoneRow">
+        <button class="country-btn" id="countryBtn" aria-label="Select country code">
+          <span class="flag" id="flagDisplay">🇮🇳</span>
+          <span id="codeDisplay">+91</span>
+          <span class="caret">▾</span>
+        </button>
+        <input
+          class="phone-input"
+          id="phoneInput"
+          type="tel"
+          inputmode="numeric"
+          placeholder="98765 43210"
+          autocomplete="tel"
+          maxlength="15"
+        />
+      </div>
+      <div class="input-actions">
+        <button class="action-chip" id="pasteBtn" aria-label="Paste from clipboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="4" rx="1"/>
+            <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/>
+            <path d="M12 11v6M9 14h6"/>
+          </svg>
+          Paste
+        </button>
+        <button class="action-chip clear-chip" id="clearBtn" aria-label="Clear all fields">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+          </svg>
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Optional Message -->
+    <div class="field">
+      <label class="field-label" for="messageInput">Message <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— optional</span></label>
+      <textarea
+        class="message-input"
+        id="messageInput"
+        placeholder="Hi, I saw your listing…"
+        rows="3"
+        maxlength="500"
+      ></textarea>
+      <span class="char-count"><span id="charCount">0</span> / 500</span>
+    </div>
+
+    <!-- Launch Button -->
+    <button class="launch-btn" id="launchBtn">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.877L.057 23.998l6.305-1.654A11.934 11.934 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.793 9.793 0 0 1-5.006-1.373l-.359-.214-3.742.981.999-3.648-.235-.374A9.818 9.818 0 0 1 2.182 12C2.182 6.579 6.579 2.182 12 2.182S21.818 6.579 21.818 12 17.421 21.818 12 21.818z"/>
+      </svg>
+      Launch Chat
+    </button>
+  </div>
+
+  <footer class="footer">
+    Opens <span>wa.me</span> directly — your number stays private.
+  </footer>
+</div>
+
+<!-- Country Selector Modal -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-label="Select country code">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">Select Country</div>
+    <input class="modal-search" id="countrySearch" type="search" placeholder="Search country or code…" autocomplete="off" />
+    <ul class="country-list" id="countryList" role="listbox"></ul>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Country Data ── */
+  const COUNTRIES = [
+    { flag: '🇮🇳', name: 'India',                code: '+91'  },
+    { flag: '🇺🇸', name: 'United States',         code: '+1'   },
+    { flag: '🇬🇧', name: 'United Kingdom',         code: '+44'  },
+    { flag: '🇦🇪', name: 'UAE',                    code: '+971' },
+    { flag: '🇸🇦', name: 'Saudi Arabia',           code: '+966' },
+    { flag: '🇵🇰', name: 'Pakistan',               code: '+92'  },
+    { flag: '🇧🇩', name: 'Bangladesh',             code: '+880' },
+    { flag: '🇳🇵', name: 'Nepal',                  code: '+977' },
+    { flag: '🇱🇰', name: 'Sri Lanka',              code: '+94'  },
+    { flag: '🇦🇺', name: 'Australia',              code: '+61'  },
+    { flag: '🇨🇦', name: 'Canada',                 code: '+1'   },
+    { flag: '🇩🇪', name: 'Germany',                code: '+49'  },
+    { flag: '🇫🇷', name: 'France',                 code: '+33'  },
+    { flag: '🇮🇹', name: 'Italy',                  code: '+39'  },
+    { flag: '🇪🇸', name: 'Spain',                  code: '+34'  },
+    { flag: '🇳🇱', name: 'Netherlands',            code: '+31'  },
+    { flag: '🇧🇪', name: 'Belgium',                code: '+32'  },
+    { flag: '🇨🇭', name: 'Switzerland',            code: '+41'  },
+    { flag: '🇵🇹', name: 'Portugal',               code: '+351' },
+    { flag: '🇸🇪', name: 'Sweden',                 code: '+46'  },
+    { flag: '🇳🇴', name: 'Norway',                 code: '+47'  },
+    { flag: '🇩🇰', name: 'Denmark',                code: '+45'  },
+    { flag: '🇫🇮', name: 'Finland',                code: '+358' },
+    { flag: '🇵🇱', name: 'Poland',                 code: '+48'  },
+    { flag: '🇷🇺', name: 'Russia',                 code: '+7'   },
+    { flag: '🇹🇷', name: 'Turkey',                 code: '+90'  },
+    { flag: '🇮🇱', name: 'Israel',                 code: '+972' },
+    { flag: '🇯🇴', name: 'Jordan',                 code: '+962' },
+    { flag: '🇰🇼', name: 'Kuwait',                 code: '+965' },
+    { flag: '🇧🇭', name: 'Bahrain',                code: '+973' },
+    { flag: '🇶🇦', name: 'Qatar',                  code: '+974' },
+    { flag: '🇴🇲', name: 'Oman',                   code: '+968' },
+    { flag: '🇾🇪', name: 'Yemen',                  code: '+967' },
+    { flag: '🇮🇶', name: 'Iraq',                   code: '+964' },
+    { flag: '🇮🇷', name: 'Iran',                   code: '+98'  },
+    { flag: '🇦🇫', name: 'Afghanistan',            code: '+93'  },
+    { flag: '🇨🇳', name: 'China',                  code: '+86'  },
+    { flag: '🇯🇵', name: 'Japan',                  code: '+81'  },
+    { flag: '🇰🇷', name: 'South Korea',            code: '+82'  },
+    { flag: '🇸🇬', name: 'Singapore',              code: '+65'  },
+    { flag: '🇲🇾', name: 'Malaysia',               code: '+60'  },
+    { flag: '🇮🇩', name: 'Indonesia',              code: '+62'  },
+    { flag: '🇵🇭', name: 'Philippines',            code: '+63'  },
+    { flag: '🇹🇭', name: 'Thailand',               code: '+66'  },
+    { flag: '🇻🇳', name: 'Vietnam',                code: '+84'  },
+    { flag: '🇧🇷', name: 'Brazil',                 code: '+55'  },
+    { flag: '🇲🇽', name: 'Mexico',                 code: '+52'  },
+    { flag: '🇦🇷', name: 'Argentina',              code: '+54'  },
+    { flag: '🇨🇴', name: 'Colombia',               code: '+57'  },
+    { flag: '🇿🇦', name: 'South Africa',           code: '+27'  },
+    { flag: '🇳🇬', name: 'Nigeria',                code: '+234' },
+    { flag: '🇰🇪', name: 'Kenya',                  code: '+254' },
+    { flag: '🇬🇭', name: 'Ghana',                  code: '+233' },
+    { flag: '🇪🇬', name: 'Egypt',                  code: '+20'  },
+    { flag: '🇲🇦', name: 'Morocco',                code: '+212' },
+    { flag: '🇹🇿', name: 'Tanzania',               code: '+255' },
+    { flag: '🇺🇬', name: 'Uganda',                 code: '+256' },
+    { flag: '🇳🇿', name: 'New Zealand',            code: '+64'  },
+  ];
+
+  /* ── State ── */
+  let selectedCountry = COUNTRIES[0]; // Default: India
+
+  /* ── DOM Refs ── */
+  const phoneInput    = document.getElementById('phoneInput');
+  const phoneRow      = document.getElementById('phoneRow');
+  const flagDisplay   = document.getElementById('flagDisplay');
+  const codeDisplay   = document.getElementById('codeDisplay');
+  const countryBtn    = document.getElementById('countryBtn');
+  const pasteBtn      = document.getElementById('pasteBtn');
+  const clearBtn      = document.getElementById('clearBtn');
+  const messageInput  = document.getElementById('messageInput');
+  const charCount     = document.getElementById('charCount');
+  const launchBtn     = document.getElementById('launchBtn');
+  const modalOverlay  = document.getElementById('modalOverlay');
+  const countryList   = document.getElementById('countryList');
+  const countrySearch = document.getElementById('countrySearch');
+  const toastCont     = document.getElementById('toastContainer');
+
+  /* ── Country Selector ── */
+  function renderCountryList(filter = '') {
+    const q = filter.toLowerCase().trim();
+    const filtered = q
+      ? COUNTRIES.filter(c => c.name.toLowerCase().includes(q) || c.code.includes(q))
+      : COUNTRIES;
+
+    countryList.innerHTML = '';
+    filtered.forEach(c => {
+      const li = document.createElement('li');
+      li.className = 'country-item' + (c === selectedCountry ? ' selected' : '');
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', c === selectedCountry);
+      li.innerHTML = `
+        <span class="ci-flag">${c.flag}</span>
+        <span class="ci-name">${c.name}</span>
+        <span class="ci-code">${c.code}</span>
+      `;
+      li.addEventListener('click', () => selectCountry(c));
+      countryList.appendChild(li);
+    });
+  }
+
+  function openModal() {
+    countrySearch.value = '';
+    renderCountryList();
+    modalOverlay.classList.add('open');
+    requestAnimationFrame(() => countrySearch.focus());
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+    countryBtn.focus();
+  }
+
+  function selectCountry(c) {
+    selectedCountry = c;
+    flagDisplay.textContent = c.flag;
+    codeDisplay.textContent = c.code;
+    closeModal();
+  }
+
+  countryBtn.addEventListener('click', openModal);
+
+  modalOverlay.addEventListener('click', e => {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  countrySearch.addEventListener('input', () => renderCountryList(countrySearch.value));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
+  });
+
+  /* ── Phone Input: strip non-digits on input ── */
+  phoneInput.addEventListener('input', () => {
+    const raw = phoneInput.value;
+    const clean = raw.replace(/[^\d]/g, '');
+    if (raw !== clean) {
+      const pos = phoneInput.selectionStart - (raw.length - clean.length);
+      phoneInput.value = clean;
+      phoneInput.setSelectionRange(pos, pos);
+    }
+    phoneRow.classList.remove('error');
+  });
+
+  /* ── Paste Button ── */
+  pasteBtn.addEventListener('click', async () => {
+    try {
+      if (!navigator.clipboard) throw new Error('no clipboard api');
+      const text = await navigator.clipboard.readText();
+      const digits = text.replace(/[^\d+]/g, '').replace(/\+/g, '');
+      if (!digits) { showToast('Nothing numeric found on clipboard.', 'error'); return; }
+      phoneInput.value = digits.slice(0, 15);
+      phoneRow.classList.remove('error');
+      phoneInput.focus();
+      showToast('Number pasted!', 'success');
+    } catch {
+      showToast('Clipboard access denied. Please paste manually.', 'error');
+    }
+  });
+
+  /* ── Clear Button ── */
+  clearBtn.addEventListener('click', () => {
+    phoneInput.value = '';
+    messageInput.value = '';
+    charCount.textContent = '0';
+    phoneRow.classList.remove('error');
+    phoneInput.focus();
+  });
+
+  /* ── Char Count ── */
+  messageInput.addEventListener('input', () => {
+    charCount.textContent = messageInput.value.length;
+  });
+
+  /* ── Validation ── */
+  function validatePhone(number) {
+    if (!number) return 'Enter a phone number first.';
+    if (number.length < 5) return 'That number looks too short.';
+    if (number.length > 15) return 'That number looks too long.';
+    return null;
+  }
+
+  /* ── Launch ── */
+  launchBtn.addEventListener('click', () => {
+    const number = phoneInput.value.trim().replace(/[^\d]/g, '');
+    const err = validatePhone(number);
+    if (err) {
+      phoneRow.classList.add('error');
+      phoneInput.focus();
+      showToast(err, 'error');
+      return;
+    }
+
+    const fullNumber = selectedCountry.code.replace('+', '') + number;
+    const message    = messageInput.value.trim();
+    const encoded    = message ? encodeURIComponent(message) : '';
+    const url        = `https://api.whatsapp.com/send/?phone=${fullNumber}${encoded ? `&text=${encoded}` : ''}`;
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+    showToast('Opening WhatsApp…', 'success');
+  });
+
+  /* ── Toast ── */
+  function showToast(message, type = 'error') {
+    const icons = { error: '⚠️', success: '✓' };
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<span class="toast-icon">${icons[type] || '•'}</span><span>${message}</span>`;
+    toastCont.appendChild(toast);
+
+    const remove = () => {
+      toast.classList.add('removing');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+
+    const timer = setTimeout(remove, 3200);
+    toast.addEventListener('click', () => { clearTimeout(timer); remove(); });
+  }
+
+})();
+</script>
+</body>
+</html>
